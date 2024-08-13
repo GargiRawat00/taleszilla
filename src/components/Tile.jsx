@@ -4,10 +4,10 @@ import '../App.css'
 import Button from 'react-bootstrap/Button';
 import { Navigate, useNavigate } from 'react-router-dom';
 export default function Tile({entry,sdata,setSdata}) {
- const path='../src/assets'+`${entry.title_img}`;
- //console.log(path);
- const addLib1='../src/images/addLib.png';
- const addLib2='../src/images/addedLib.png';
+
+  const path=`${entry.title_img}.png`;
+ const addLib1='/images/addLib.png';
+ const addLib2='/images/addedLib.png';
  const [addLib,setAddLib]=useState(entry.isAdded==0?addLib1:addLib2);
 // console.log("id is: ", id);
 //console.log(entry);

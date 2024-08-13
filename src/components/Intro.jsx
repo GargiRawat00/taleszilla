@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react'
 import '../App.css';
-import logo from '../images/Logo.png'
+import logo from '/images/Logo.png'
 import { Link } from 'react-router-dom';
 import GlowButton from './GlowButton';
 export default function Intro({bg}) {
@@ -12,7 +12,7 @@ export default function Intro({bg}) {
   useEffect(()=>{const intervalId= setInterval(function() {
     if(text==temp1) setText(temp2);
     else setText(temp1);
-  }, 10000);
+  }, 8000);
   return () => clearInterval(intervalId);
 },[text])
   return (

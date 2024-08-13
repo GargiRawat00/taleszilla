@@ -1,7 +1,7 @@
 
 
-import lightIcon from '../images/lightModeIcon.png'
-import darkIcon from '../images/darkModeIcon.png'
+import lightIcon from '/images/lightModeIcon.png'
+import darkIcon from '/images/darkModeIcon.png'
 import LogoName from './LogoName'
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
@@ -9,7 +9,6 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Link } from 'react-router-dom';
-import Theme from './Theme';
 import '../App.css'
 function CollapsibleExample({theme,bg,handleClick}) {
   return (
@@ -26,8 +25,8 @@ function CollapsibleExample({theme,bg,handleClick}) {
           </Nav>
           <Nav>
            
-            <Nav.Link eventKey={2} href="#memes">
-              Dank memes
+            <Nav.Link as={Link} to='/about'>
+              About Us
             </Nav.Link>
           </Nav>
         </Navbar.Collapse>

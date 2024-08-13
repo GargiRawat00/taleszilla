@@ -3,7 +3,6 @@
 
 
 import React, { useEffect } from 'react'
-import Story from './components/Story';
 //import data from './storiesData.json'
 import Tile from './components/Tile';
 

@@ -1,5 +1,6 @@
 
 
+
 import { useEffect, useState } from 'react';
 import './App.css';
 import Navbar from './components/Navbar.jsx'
@@ -8,16 +9,17 @@ import GlowButton from './components/GlowButton.jsx'
 import Home from './Home.jsx'
 import {  Route, BrowserRouter, Routes, Link} from 'react-router-dom';
 import Stories from './Stories.jsx'
-import lightIcon from './images/lightModeIcon.png'
-import darkIcon from './images/darkModeIcon.png'
-import logo from './images/Logo.png'
+import lightIcon from '/images/lightModeIcon.png'
+import darkIcon from '/images/darkModeIcon.png'
+import logo from '/images/Logo.png'
 import data from './storiesData.json'
 import Library from './Library.jsx'
 import Motivation from './Motivation.jsx';
 import PageNotFound from './PageNotFound.jsx';
 import YourCandy from './YourCandy.jsx';
-import Theme from './components/Theme.jsx';
 import Chapter from './Chapter.jsx'
+import About from './components/About.jsx';
+ 
 function App() {
 const [sdata,setSdata]=useState(getInitialData);
 function getInitialData() {
@@ -79,6 +81,7 @@ return (
       <Route path='/motivationCandy' element={<Motivation/>}>
       </Route>
       <Route path='/yourCandy' element={<YourCandy/>}/>
+      <Route path='/about' element={<About/>}/>
       <Route path='*' element={<PageNotFound/>}/>
       </Routes>
       </div>

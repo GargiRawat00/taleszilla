@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import './App.css';
 import { Navigate, useNavigate } from 'react-router-dom';
-import pickYourOrder from './assets/motivationCandy/pickYourOrder.png';
-import hereIsYourOrder from './assets/motivationCandy/hereIsYourOrder.png';
+import pickYourOrder from '/assets/motivationCandy/pickYourOrder.png';
+import hereIsYourOrder from '/assets/motivationCandy/hereIsYourOrder.png';
 export default function Motivation() {
     //const pickYourOrder='../src/assets/motivationCandy/motivation/pickYourOrder.png';
     //const hereIsYourOrder='../src/assets/motivationCandy/motivation/hereIsYourOrder.png';

@@ -5,7 +5,7 @@
 [{
         "id":99,
         "title":"Masari's Elf Princess and The Black Dog",
-        "base_url":"/src/assets/storiesFolder/elfPrincess",
+        "base_url":"/assets/storiesFolder/elfPrincess",
         "chapters":[
             {
                 "cid":1,
@@ -20,18 +20,18 @@
                 "chapter_name":"Through Time's Veil"
             }
         ],
-        "title_img":"/storiesFolder/elfPrincess/title_img.png"
+        "title_img":"/assets/storiesFolder/elfPrincess/title_img"
 },
 {
     "id":2,
     "title":"Kanak",
-    "base_url":"/src/assets/storiesFolder/kanak",
+    "base_url":"/assets/storiesFolder/kanak",
     "chapters":[
         {
             "cid":1,
             "chapter_name":"The Beginning"
         }
     ],
-    "title_img":"/storiesFolder/kanak/title_img.png"
+    "title_img":"/assets/storiesFolder/kanak/title_img"
 }
 ]

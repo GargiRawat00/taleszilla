@@ -1,7 +1,7 @@
 
 
 import React from 'react'
-import bg from '../images/LogoName.png'
+import bg from '/images/LogoName.png'
 import "../App.css";
 export default function LogoName({h}) {
   return (

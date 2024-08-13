@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Button } from 'react-bootstrap';
 import './App.css'
-const BASE_URL='/src/assets/motivationCandy/motivation'
+const BASE_URL='/assets/motivationCandy/motivation'
 const y = Math.floor((Math.random() * 104) + 1);
 export default function YourCandy() {
     const [newURL, setNewURL]=useState(BASE_URL+'/'+y+'.png');
