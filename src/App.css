@@ -157,7 +157,7 @@ h1
   text-decoration: none;
 }
 
-.motImg
+/* .motImg
 {
   display: flex;
   align-content: center;
@@ -167,15 +167,34 @@ h1
   width: 100vw;
   margin: 5px;
   flex-wrap: wrap;
-}
-.motImg img
+} */
+/* .motImg img
 {
   height: 60vh;
   width: auto;
   min-width: 350px;
+} */
+.motImg
+{
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  text-align: center;
+  width: 100vw;
+  margin: 5px;
+  flex-wrap: wrap;
 }
+.motImg img
+{
+  width: 60vw;
+  height: auto;
+  min-width: 320px;
+  max-width: 700px;
+}
+
 .motImg h2{
 align-self:center;
+margin: 1rem;
 }
 
 .motcard
@@ -190,6 +209,8 @@ align-self:center;
   gap:10 px;
   flex-wrap: wrap;
 }
+
+
 .motcard img
 {
   height: 70vh;
@@ -270,5 +291,6 @@ br
 .chbtn{
   height: 7vh;
   width: 15vw;
+  min-width: 100px;
   font-size: 1.5rem!important;
 }
