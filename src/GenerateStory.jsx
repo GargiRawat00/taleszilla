@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import api from "./api";
 import { useNavigate } from "react-router-dom";
+import api from "./api";
 
 export default function GenerateStory() {
   const navigate = useNavigate();
@@ -10,7 +10,7 @@ export default function GenerateStory() {
     emotion: "Happiness",
     ageGroup: "8-10",
     character: "Leo the Lion",
-    storyLength: "short"
+    storyLength: "short",
   });
 
   const [loading, setLoading] = useState(false);
@@ -19,7 +19,7 @@ export default function GenerateStory() {
   const handleChange = (e) => {
     setForm({
       ...form,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -37,140 +37,98 @@ export default function GenerateStory() {
       setLoading(true);
       setError("");
 
-      const res = await api.post(
-        "/ai/generate-story",
-        {
-          theme: form.theme,
-          emotion: form.emotion,
-          ageGroup: form.ageGroup,
-          characters: [form.character],
-          storyLength: form.storyLength
-        }
-      );
+      const res = await api.post("/ai/generate-story", {
+        theme: form.theme,
+        emotion: form.emotion,
+        ageGroup: form.ageGroup,
+        characters: [form.character],
+        storyLength: form.storyLength,
+      });
 
-      const story = res.data.story;
+      const story = {
+        ...res.data,
+        id: res.data._id || res.data.id,
+        chNo: 1,
+      };
 
-      navigate(
-        `/story/${story.id}/1`,
-        {
-          state: {
-            newentry: story
-          }
-        }
-      );
-
+      navigate(`/story/${story.id}/1`, {
+        state: { story },
+      });
     } catch (err) {
-      setError(
-        err.response?.data?.message ||
-        "Unable to generate story"
-      );
+      setError(err.response?.data?.message || "Unable to generate story");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div
-      className="container mt-5 mb-5"
-      style={{ maxWidth: "650px" }}
-    >
-      <h1 className="text-center mb-4">
-        Create Your Story
-      </h1>
+    <div className="container mt-5">
+      <h2>Create Your Story</h2>
 
       <form onSubmit={handleSubmit}>
-        <label className="form-label">
-          Theme
-        </label>
+        <div className="mb-3">
+          <label>Theme</label>
+          <input
+            className="form-control"
+            name="theme"
+            value={form.theme}
+            onChange={handleChange}
+          />
+        </div>
 
-        <select
-          name="theme"
-          value={form.theme}
-          onChange={handleChange}
-          className="form-control mb-3"
-        >
-          <option>Friendship</option>
-          <option>Courage</option>
-          <option>Kindness</option>
-          <option>Sharing</option>
-          <option>Honesty</option>
-        </select>
+        <div className="mb-3">
+          <label>Emotion</label>
+          <input
+            className="form-control"
+            name="emotion"
+            value={form.emotion}
+            onChange={handleChange}
+          />
+        </div>
 
-        <label className="form-label">
-          Emotion
-        </label>
+        <div className="mb-3">
+          <label>Age Group</label>
+          <select
+            className="form-control"
+            name="ageGroup"
+            value={form.ageGroup}
+            onChange={handleChange}
+          >
+            <option value="5-7">5-7</option>
+            <option value="8-10">8-10</option>
+            <option value="11-13">11-13</option>
+          </select>
+        </div>
 
-        <select
-          name="emotion"
-          value={form.emotion}
-          onChange={handleChange}
-          className="form-control mb-3"
-        >
-          <option>Happiness</option>
-          <option>Fear</option>
-          <option>Jealousy</option>
-          <option>Anger</option>
-          <option>Sadness</option>
-        </select>
+        <div className="mb-3">
+          <label>Character</label>
+          <input
+            className="form-control"
+            name="character"
+            value={form.character}
+            onChange={handleChange}
+          />
+        </div>
 
-        <label className="form-label">
-          Age Group
-        </label>
+        <div className="mb-3">
+          <label>Story Length</label>
+          <select
+            className="form-control"
+            name="storyLength"
+            value={form.storyLength}
+            onChange={handleChange}
+          >
+            <option value="short">Short</option>
+            <option value="medium">Medium</option>
+          </select>
+        </div>
 
-        <select
-          name="ageGroup"
-          value={form.ageGroup}
-          onChange={handleChange}
-          className="form-control mb-3"
-        >
-          <option value="6-8">6-8</option>
-          <option value="8-10">8-10</option>
-          <option value="10-12">10-12</option>
-        </select>
+        {error && <p style={{ color: "red" }}>{error}</p>}
 
-        <label className="form-label">
-          Character
-        </label>
-
-        <input
-          name="character"
-          value={form.character}
-          onChange={handleChange}
-          className="form-control mb-3"
-          placeholder="Leo the Lion"
-          required
-        />
-
-        <label className="form-label">
-          Story Length
-        </label>
-
-        <select
-          name="storyLength"
-          value={form.storyLength}
-          onChange={handleChange}
-          className="form-control mb-4"
-        >
-          <option value="short">Short</option>
-          <option value="medium">Medium</option>
-          <option value="long">Long</option>
-        </select>
-
-        <button
-          className="btn btn-primary w-100"
-          disabled={loading}
-        >
-          {loading
-            ? "Generating..."
-            : "Generate Story"}
+        <button className="btn btn-primary" disabled={loading}>
+          {loading ? "Generating..." : "Generate Story"}
         </button>
       </form>
-
-      {error && (
-        <div className="alert alert-danger mt-3">
-          {error}
-        </div>
-      )}
     </div>
   );
 }

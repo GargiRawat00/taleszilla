@@ -1,16 +1,14 @@
 const express = require("express");
-
-const router = express.Router();
-
 const auth = require("../middleware/authMiddleware");
 
 const {
-    getActivities,
-    createActivity
+  getActivities,
+  createActivity,
 } = require("../controllers/activityController");
 
-router.get("/", auth, getActivities);
+const router = express.Router();
 
+router.get("/", auth, getActivities);
 router.post("/", auth, createActivity);
 
 module.exports = router;

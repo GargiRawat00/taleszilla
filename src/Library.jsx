@@ -21,21 +21,43 @@ export default function Library({ sdata, setSdata }) {
       try {
         const res = await api.get("/favorites");
 
-        const stories = res.data
-          .map((item) => item.story)
-          .filter(Boolean)
-          .map((story) => ({
-            ...story,
-            isAdded: 1,
-            chNo: story.chNo || 1
-          }));
+        const stories = await Promise.all(
+          res.data
+            .map((item) => item.story)
+            .filter(Boolean)
+            .map(async (story) => {
+              try {
+                const img = await api.get("/images/story", {
+                  params: {
+                    title: story.title,
+                    theme: story.theme,
+                    emotion: story.emotion,
+                  },
+                });
+
+                return {
+                  ...story,
+                  id: story._id || story.id,
+                  title_img: img.data.image,
+                  imageAuthor: img.data.author,
+                  isAdded: 1,
+                  chNo: story.chNo || 1,
+                };
+              } catch {
+                return {
+                  ...story,
+                  id: story._id || story.id,
+                  title_img: story.image || "/images/Logo.png",
+                  isAdded: 1,
+                  chNo: story.chNo || 1,
+                };
+              }
+            }),
+        );
 
         setFavorites(stories);
       } catch (err) {
-        console.error(
-          "Library error:",
-          err.response?.data || err.message
-        );
+        console.error("Library error:", err.response?.data || err.message);
       } finally {
         setLoading(false);
       }

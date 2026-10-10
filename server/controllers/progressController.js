@@ -1,123 +1,74 @@
-const { progress } = require("../data");
-const { stories } = require("./storyController");
+const Progress = require("../models/Progress");
+const Story = require("../models/Story");
 
-const getProgress = (req, res) => {
-    const userProgress = progress
-        .filter(p => p.userId === req.user.id)
-        .map(p => ({
-            ...p,
-            story: stories.find(s => s.id === p.storyId)
-        }));
+const getProgress = async (req, res) => {
+  try {
+    const progress = await Progress.find({
+      userId: req.user.id,
+    }).populate("storyId");
 
-    res.json(userProgress);
+    res.json(progress);
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
 };
 
-const getStoryProgress = (req, res) => {
-    const item = progress.find(
-        p =>
-            p.userId === req.user.id &&
-            p.storyId === req.params.storyId
-    );
+const updateProgress = async (req, res) => {
+  try {
+    const { percentage, completed } = req.body;
 
-    if (!item) {
-        return res.status(404).json({
-            message: "Progress not found"
-        });
-    }
-
-    res.json(item);
-};
-
-const updateProgress = (req, res) => {
-    const { storyId } = req.params;
-
-    let { percentage, completed } = req.body;
-
-    const story = stories.find(s => s.id === storyId);
+    const story = await Story.findById(req.params.storyId);
 
     if (!story) {
-        return res.status(404).json({
-            message: "Story not found"
-        });
+      return res.status(404).json({
+        message: "Story not found",
+      });
     }
 
-    percentage = Number(percentage);
-
-    if (
-        Number.isNaN(percentage) ||
-        percentage < 0 ||
-        percentage > 100
-    ) {
-        return res.status(400).json({
-            message: "Percentage must be between 0 and 100"
-        });
-    }
-
-    let item = progress.find(
-        p =>
-            p.userId === req.user.id &&
-            p.storyId === storyId
+    const progress = await Progress.findOneAndUpdate(
+      {
+        userId: req.user.id,
+        storyId: req.params.storyId,
+      },
+      {
+        percentage,
+        completed,
+      },
+      {
+        new: true,
+        upsert: true,
+      },
     );
 
-    if (item) {
-        item.percentage = percentage;
-        item.completed =
-            completed !== undefined
-                ? completed
-                : percentage === 100;
-
-        item.updatedAt = new Date().toISOString();
-
-        return res.json({
-            message: "Progress updated",
-            progress: item
-        });
-    }
-
-    item = {
-        id: Date.now().toString(),
-        userId: req.user.id,
-        storyId,
-        percentage,
-        completed:
-            completed !== undefined
-                ? completed
-                : percentage === 100,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-    };
-
-    progress.push(item);
-
-    res.status(201).json({
-        message: "Progress created",
-        progress: item
+    res.json(progress);
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
     });
+  }
 };
 
-const deleteProgress = (req, res) => {
-    const index = progress.findIndex(
-        p =>
-            p.userId === req.user.id &&
-            p.storyId === req.params.storyId
-    );
-
-    if (index === -1) {
-        return res.status(404).json({
-            message: "Progress not found"
-        });
-    }
-
-    progress.splice(index, 1);
+const deleteProgress = async (req, res) => {
+  try {
+    await Progress.findOneAndDelete({
+      userId: req.user.id,
+      storyId: req.params.storyId,
+    });
 
     res.json({
-        message: "Progress deleted"
+      message: "Progress deleted",
     });
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
 };
 
 module.exports = {
-    getProgress,
-    getStoryProgress,
-    updateProgress,
-    deleteProgress
+  getProgress,
+  updateProgress,
+  deleteProgress,
 };

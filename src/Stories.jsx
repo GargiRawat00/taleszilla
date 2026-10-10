@@ -1,70 +1,52 @@
-import React, {
-  useEffect,
-  useState
-} from "react";
+import React, { useEffect, useState } from "react";
 
 import Tile from "./components/Tile";
 import api from "./api";
 
-export default function Stories({
-  sdata,
-  setSdata
-}) {
-  const [loading, setLoading] =
-    useState(true);
+export default function Stories({ sdata, setSdata }) {
+  const [loading, setLoading] = useState(true);
 
-  const [error, setError] =
-    useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const loadStories = async () => {
       try {
-        const res =
-          await api.get("/stories");
+        const res = await api.get("/stories");
 
-        const stories =
-          await Promise.all(
-            res.data.map(async (story) => {
-              try {
-                const img =
-                  await api.get(
-                    "/images/story",
-                    {
-                      params: {
-                        title: story.title,
-                        theme: story.theme,
-                        emotion: story.emotion
-                      }
-                    }
-                  );
+        const stories = await Promise.all(
+          res.data.map(async (story) => {
+            try {
+              const img = await api.get("/images/story", {
+                params: {
+                  title: story.title,
+                  theme: story.theme,
+                  emotion: story.emotion,
+                },
+              });
 
-                return {
-                  ...story,
-                  title_img:
-                    img.data.image,
-                  imageAuthor:
-                    img.data.author,
-                  isAdded: 0,
-                  chNo: 1
-                };
-              } catch {
-                return {
-                  ...story,
-                  title_img:
-                    "/images/Logo.png",
-                  isAdded: 0,
-                  chNo: 1
-                };
-              }
-            })
-          );
+              return {
+                ...story,
+                id: story._id || story.id,
+                title_img: img.data.image,
+                imageAuthor: img.data.author,
+                isAdded: 0,
+                chNo: 1,
+              };
+            } catch {
+              return {
+                ...story,
+                id: story._id || story.id,
+                title_img: "/images/Logo.png",
+                isAdded: 0,
+                chNo: 1,
+              };
+            }
+          }),
+        );
 
         setSdata(stories);
       } catch (err) {
-        setError(
-          err.response?.data?.message ||
-            "Unable to load stories"
-        );
+        setError(err.response?.data?.message || "Unable to load stories");
       } finally {
         setLoading(false);
       }
@@ -108,7 +90,7 @@ export default function Stories({
         style={{
           textAlign: "center",
           marginTop: "25px",
-          opacity: 0.7
+          opacity: 0.7,
         }}
       >
         Images provided by Pixabay

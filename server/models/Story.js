@@ -1,43 +1,74 @@
 const mongoose = require("mongoose");
 
-const storySchema = new mongoose.Schema({
+const storySchema = new mongoose.Schema(
+  {
     title: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
 
     content: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
 
-    theme: String,
+    theme: {
+      type: String,
+      default: "",
+    },
 
-    emotion: String,
+    emotion: {
+      type: String,
+      default: "",
+    },
 
-    ageGroup: String,
+    ageGroup: {
+      type: String,
+      default: "",
+    },
 
-    characters: [String],
+    characters: [
+      {
+        type: String,
+      },
+    ],
 
-    eqLesson: String,
+    eqLesson: {
+      type: String,
+      default: "",
+    },
 
-    eqSkills: [String],
+    eqSkills: [
+      {
+        type: String,
+      },
+    ],
 
-    reflectionQuestions: [String],
+    reflectionQuestions: [
+      {
+        type: String,
+      },
+    ],
 
-    image: String,
+    image: {
+      type: String,
+      default: "",
+    },
 
     generatedByAI: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false,
     },
 
     createdBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
-    }
-}, {
-    timestamps: true
-});
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
 
 module.exports = mongoose.model("Story", storySchema);
