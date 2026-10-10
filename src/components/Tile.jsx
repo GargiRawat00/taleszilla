@@ -1,49 +1,170 @@
-import React from 'react'
-import { useState } from 'react';
-import '../App.css'
-import Button from 'react-bootstrap/Button';
-import { Navigate, useNavigate } from 'react-router-dom';
-export default function Tile({entry,sdata,setSdata}) {
+import React, { useState } from "react";
+import "../App.css";
 
-  const path=`${entry.title_img}.png`;
- const addLib1='/images/addLib.png';
- const addLib2='/images/addedLib.png';
- const [addLib,setAddLib]=useState(entry.isAdded==0?addLib1:addLib2);
-// console.log("id is: ", id);
-//console.log(entry);
-const navigate=useNavigate();
- function handleClick()
-  {
-    //console.log("id is: ", id);
-    setSdata(sdata.map((e)=>{
-        if(entry.id==e.id)
-        {
-            return {...e, isAdded:!e.isAdded};
+import Button from "react-bootstrap/Button";
+import { useNavigate } from "react-router-dom";
+import api from "../api";
+
+export default function Tile({
+  entry,
+  sdata,
+  setSdata
+}) {
+  const navigate = useNavigate();
+
+  const [added, setAdded] =
+    useState(Boolean(entry.isAdded));
+
+  const handleFavorite = async () => {
+    const token =
+      localStorage.getItem("token");
+
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    try {
+      if (!added) {
+        await api.post(
+          `/favorites/${entry.id}`
+        );
+      } else {
+        await api.delete(
+          `/favorites/${entry.id}`
+        );
+      }
+
+      const val = !added;
+
+      setAdded(val);
+
+      setSdata(
+        sdata.map((story) =>
+          story.id === entry.id
+            ? {
+                ...story,
+                isAdded: val ? 1 : 0
+              }
+            : story
+        )
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const readStory = () => {
+    navigate(
+      `/story/${entry.id}/${entry.chNo || 1}`,
+      {
+        state: {
+          newentry: entry
         }
-        else return e;
-    }))
-    //console.log(sdata);
-   if(addLib==addLib1) setAddLib(addLib2)
-    else setAddLib(addLib1);
+      }
+    );
+  };
 
-  } 
+  return (
+    <div className="tile">
+      <img
+        className="tileimg"
+        src={
+          entry.title_img ||
+          "/images/Logo.png"
+        }
+        alt={entry.title}
+        onError={(e) => {
+          e.currentTarget.src =
+            "/images/Logo.png";
+        }}
+      />
 
-  function handleTileClick()
-  {
-    //console.log(entry.chNo);
-     const str=`/story/${entry.id}/${entry.chNo}`;
-     //console.log("path is: ", str);
-     const newentry=entry;
-    navigate(str,{state:{newentry}});
-  }
- return (
-    
-    <div className='tile' >
-            <img className='tileimg' src={path} alt="Tile" />  
-      <div className="btn-ctn">    
-        <Button variant="primary" style={{"height":"8vh","width":"50%"}} onClick={handleTileClick}>Start Reading</Button>
-        <Button variant="primary" style={{"height":"8vh","width":"10vh"}}><img style={{"height":"6vh","width":"6vh","textAlign":"center","padding":"2px"}} src={`${addLib}`} onClick={handleClick}/></Button>
+      <div
+        style={{
+          padding: "20px",
+          display: "flex",
+          flexDirection: "column",
+          flex: 1
+        }}
+      >
+        <h3>
+          {entry.title}
+        </h3>
+
+        <div
+          style={{
+            display: "flex",
+            gap: "8px",
+            flexWrap: "wrap",
+            marginBottom: "12px"
+          }}
+        >
+          {entry.theme && (
+            <span
+              className="badge bg-primary"
+            >
+              {entry.theme}
+            </span>
+          )}
+
+          {entry.emotion && (
+            <span
+              className="badge bg-warning text-dark"
+            >
+              {entry.emotion}
+            </span>
+          )}
+        </div>
+
+        {entry.eqLesson && (
+          <p
+            style={{
+              fontSize: "14px",
+              opacity: 0.85
+            }}
+          >
+            {entry.eqLesson}
+          </p>
+        )}
+
+        <div className="btn-ctn">
+          <Button
+            variant="primary"
+            style={{
+              flex: 1
+            }}
+            onClick={readStory}
+          >
+            Start Reading
+          </Button>
+
+          <Button
+            variant={
+              added
+                ? "success"
+                : "outline-primary"
+            }
+            style={{
+              width: "52px"
+            }}
+            onClick={handleFavorite}
+          >
+            {added ? "?" : "?"}
+          </Button>
+        </div>
+
+        {entry.imageAuthor && (
+          <small
+            style={{
+              marginTop: "10px",
+              opacity: 0.55
+            }}
+          >
+            Image by {entry.imageAuthor}
+          </small>
+        )}
       </div>
     </div>
-  )
+  );
 }

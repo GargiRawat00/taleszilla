@@ -294,3 +294,123 @@ br
   min-width: 100px;
   font-size: 1.5rem!important;
 }
+/* ===== TalesZilla story cards ===== */
+
+.stories {
+  padding: 35px 20px 60px;
+  min-height: 100vh;
+}
+
+.stories h1 {
+  text-align: center;
+  margin-bottom: 35px;
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 28px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.tile {
+  background: white;
+  border-radius: 22px;
+  overflow: hidden;
+  border: none;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+
+  display: flex;
+  flex-direction: column;
+
+  min-height: 470px;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.tile:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.18);
+}
+
+.tileimg {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  display: block;
+}
+
+.tile h3 {
+  font-size: 1.55rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  line-height: 1.25;
+  color: #202020;
+}
+
+.tile p {
+  margin-bottom: 10px;
+  line-height: 1.45;
+  color: #555;
+}
+
+.tile .btn-ctn {
+  margin-top: auto;
+  display: flex;
+  gap: 10px;
+  padding-top: 10px;
+}
+
+.tile .btn {
+  min-height: 48px;
+  border-radius: 12px;
+}
+
+@media (max-width: 600px) {
+  .stories {
+    padding: 25px 14px 50px;
+  }
+
+  .stories h1 {
+    font-size: 2rem;
+  }
+
+  .tiles {
+    grid-template-columns: 1fr;
+  }
+
+  .tile {
+    min-height: auto;
+  }
+
+  .tileimg {
+    height: 220px;
+  }
+}
+
+/* extra spacing between story cards */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px 20px 30px;
+}
+
+
+/* extra spacing between story cards */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 50px;
+  max-width: 1250px;
+  margin: 0 auto;
+  padding: 20px 25px 40px;
+}
+

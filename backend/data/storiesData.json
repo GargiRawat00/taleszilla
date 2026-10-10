@@ -1,0 +1,37 @@
+
+
+
+
+[{
+        "id":99,
+        "title":"Masari's Elf Princess and The Black Dog",
+        "base_url":"/assets/storiesFolder/elfPrincess",
+        "chapters":[
+            {
+                "cid":1,
+                "chapter_name":"The Grumpy Elf Princess"
+            },
+            {
+                "cid":2,
+                "chapter_name":"The Forbidden Spell and the Magic Portal"
+            },
+            {
+                "cid":3,
+                "chapter_name":"Through Time's Veil"
+            }
+        ],
+        "title_img":"/assets/storiesFolder/elfPrincess/title_img"
+},
+{
+    "id":2,
+    "title":"Kanak",
+    "base_url":"/assets/storiesFolder/kanak",
+    "chapters":[
+        {
+            "cid":1,
+            "chapter_name":"The Beginning"
+        }
+    ],
+    "title_img":"/assets/storiesFolder/kanak/title_img"
+}
+]

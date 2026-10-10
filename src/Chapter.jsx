@@ -1,95 +1,169 @@
-import React, { useEffect, useState } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import './App.css'
-import { Alert, Button } from 'react-bootstrap';
-import AlertDismissibleExample from './components/DismissableAlert';
-export default function Chapter({sdata,setSdata}) {
-    const x=useParams();
-    const id=x.id;
-    const ch=x.ch;
-    const location = useLocation();
-    //console.log("location", location);
-    const entry = location.state.newentry;
-    //const entry=entry1[0];
-     //console.log("entry1", entry1);
-     //console.log("entry", entry);
-    const chapterTxtURL=`${entry.base_url}/chapters/ch${entry.chNo}.txt`;
-    const chapterImgURL=`${entry.base_url}/images/ch${entry.chNo}.png`;
-    const [text,setText]=useState('');
-    const [curr,setcurr]=useState(false);
-    const navigate=useNavigate();
-    //console.log(ch);
-    //console.log(entry);
-    function handlePrev()
-    {
-        const num=Number(ch)-1;
-       
-        if(num>0)
-            {
-                const str=`/story/${entry.id}/${num}`;
-                const newdata=sdata.map((ele)=> ele.id==entry.id?{...ele, chNo: num}:ele);
-                setSdata(newdata);
-                //console.log('sdata is: ',sdata); 
-                const nextentry=newdata.filter((ele)=>ele.id==entry.id);
-                const newentry=nextentry[0];
-                navigate(str,{state:{newentry}});
-            }
-            else
-            {
-                navigate('/stories');
-            }
-    }
-    function handleNext()
-    {
-        const num=Number(ch)+1;
-        if((Number(ch)+1)<=entry.chapters.length)
-        {
-            const str=`/story/${entry.id}/${num}`;
-            const newdata=sdata.map((ele)=> ele.id==entry.id?{...ele, chNo: num}:ele);
-            setSdata(newdata);
-            //console.log('sdata is: ',sdata); 
-            const nextentry=newdata.filter((ele)=>ele.id==entry.id);
-            //console.log("new data is: ",newdata);
-           
-            const newentry=nextentry[0];
-            //console.log("new entry is: ",newentry);
-            navigate(str,{state:{newentry}});
+import React, { useEffect, useState } from "react";
+import {
+  useLocation,
+  useNavigate,
+  useParams
+} from "react-router-dom";
+
+import "./App.css";
+import { Button } from "react-bootstrap";
+import api from "./api";
+
+export default function Chapter() {
+  const { id } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const [story, setStory] = useState(
+    location.state?.newentry || null
+  );
+
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadStory = async () => {
+      try {
+        if (!story) {
+          const res = await api.get(`/stories/${id}`);
+          setStory(res.data);
         }
-        else
-        {
-            setcurr(true);
-        }
-    }
-  fetch(chapterTxtURL)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
+      } catch (err) {
+        console.error("Story load error:", err);
+      } finally {
+        setLoading(false);
       }
-      return response.text();
-    })
-    .then(data => {
-      setText(data);
-    })
-    .catch(error => {
-      console.error('There was a problem with the fetch operation:', error);
-    })
+    };
+
+    loadStory();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+
+  const completeStory = async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    try {
+      await api.put(`/progress/${id}`, {
+        percentage: 100,
+        completed: true
+      });
+
+      await api.post("/activity", {
+        type: "story_completed",
+        storyId: String(id)
+      });
+
+      alert("Story completed!");
+    } catch (err) {
+      console.error("Progress error:", err);
+    }
+  };
+
+  if (loading) {
     return (
-    <div className='chapter'>
-      <h1>Chapter- {ch}</h1>
-      <h2>{entry.chapters[(Number(entry.chNo)-1)].chapter_name}</h2>
-      <img src={chapterImgURL} alt="" className='chapterImg'/>
-      <br/>
-      <pre className={`chapterTxt josefin-sans-font`}>{text}</pre>
-      <AlertDismissibleExample setcurr={setcurr} curr={curr} heading='Chapter under Progress' msg='Hey Champ! Glad that you have come this far. 
-      We are working on this chapter and it will be updated soon'/>
-      <div className="chBtns">
-      <Button variant="primary" size="lg" className='chbtn' onClick={handlePrev}>
-          Prev
+      <div className="container mt-5">
+        <h2>Loading story...</h2>
+      </div>
+    );
+  }
+
+  if (!story) {
+    return (
+      <div className="container mt-5">
+        <h2>Story not found</h2>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="container mt-5 mb-5"
+      style={{ maxWidth: "850px" }}
+    >
+      <h1 className="text-center">
+        {story.title}
+      </h1>
+
+      <div className="text-center mb-4">
+        {story.theme && (
+          <span className="badge bg-primary me-2">
+            {story.theme}
+          </span>
+        )}
+
+        {story.emotion && (
+          <span className="badge bg-warning text-dark">
+            {story.emotion}
+          </span>
+        )}
+      </div>
+
+      {story.title_img && (
+        <img
+          src={story.title_img}
+          alt={story.title}
+          style={{
+            width: "100%",
+            maxHeight: "400px",
+            objectFit: "cover",
+            borderRadius: "12px",
+            marginBottom: "25px"
+          }}
+        />
+      )}
+
+      <div
+        style={{
+          fontSize: "20px",
+          lineHeight: "1.8",
+          whiteSpace: "pre-wrap"
+        }}
+      >
+        {story.content ||
+          "Story content will appear here."}
+      </div>
+
+      {story.eqLesson && (
+        <div className="alert alert-success mt-4">
+          <h4>EQ Lesson</h4>
+          <p>{story.eqLesson}</p>
+        </div>
+      )}
+
+      {story.reflectionQuestions &&
+        story.reflectionQuestions.length > 0 && (
+          <div className="mt-4">
+            <h3>Think About It</h3>
+
+            {story.reflectionQuestions.map(
+              (q, i) => (
+                <p key={i}>
+                  {i + 1}. {q}
+                </p>
+              )
+            )}
+          </div>
+        )}
+
+      <div className="d-flex justify-content-between mt-5">
+        <Button
+          variant="secondary"
+          onClick={() => navigate("/stories")}
+        >
+          Back
         </Button>
-        <Button variant="primary" size="lg" className='chbtn' onClick={handleNext}>
-          Next
+
+        <Button
+          variant="success"
+          onClick={completeStory}
+        >
+          Complete Story
         </Button>
       </div>
     </div>
-  )
+  );
 }
